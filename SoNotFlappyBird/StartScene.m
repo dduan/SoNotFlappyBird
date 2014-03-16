@@ -27,6 +27,11 @@
 {
     self.scaleMode = SKSceneScaleModeAspectFit;
     self.physicsWorld.gravity = CGVectorMake(0, -11.0);
+    
+    SKPhysicsBody *border = [SKPhysicsBody bodyWithEdgeLoopFromRect: self.frame];
+    self.physicsBody = border;
+    self.physicsBody.friction = 0.0;
+    
     SKSpriteNode *bird = [self newBird];
     bird.position = CGPointMake(50, CGRectGetMidY(self.frame));
     [self addChild: bird];
