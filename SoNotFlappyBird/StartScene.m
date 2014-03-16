@@ -50,11 +50,11 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     SKNode *bird = [self childNodeWithName: @"bird"];
-    if (self.isPlaying) {
-        bird.physicsBody.velocity = CGVectorMake(0, 530);
-    } else {
+    if (!self.isPlaying) {
         self.isPlaying = YES;
         bird.physicsBody.dynamic = YES;
     }
+    bird.physicsBody.velocity = CGVectorMake(0, 530);
+
 }
 @end
