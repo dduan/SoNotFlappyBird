@@ -10,6 +10,7 @@
 
 @interface StartScene ()
 @property BOOL contentCreated;
+@property BOOL isPlaying;
 @end
 
 @implementation StartScene
@@ -25,15 +26,30 @@
 - (void)createSceneContents
 {
     self.scaleMode = SKSceneScaleModeAspectFit;
+    self.physicsWorld.gravity = CGVectorMake(0, -11.0);
     SKSpriteNode *bird = [self newBird];
     bird.position = CGPointMake(50, CGRectGetMidY(self.frame));
-    bird.size = CGSizeMake(44.0, 44.0);
     [self addChild: bird];
 }
 
 - (SKSpriteNode *)newBird
 {	
     SKSpriteNode *bird = [SKSpriteNode spriteNodeWithImageNamed: @"bird"];
+    bird.size = CGSizeMake(44.0, 44.0);
+    bird.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius: 22.0];
+    bird.physicsBody.dynamic = NO;
+    bird.name = @"bird";
     return bird;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    SKNode *bird = [self childNodeWithName: @"bird"];
+    if (self.isPlaying) {
+        bird.physicsBody.velocity = CGVectorMake(0, 530);
+    } else {
+        self.isPlaying = YES;
+        bird.physicsBody.dynamic = YES;
+    }
 }
 @end
