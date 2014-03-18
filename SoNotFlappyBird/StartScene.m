@@ -28,21 +28,22 @@
 
 - (void)didSimulatePhysics
 {
-    [self enumerateChildNodesWithName: @"pair" usingBlock: ^(SKNode *pair, BOOL *stop) {
+    __block SKNode *disappeared = nil;
+    __block CGFloat maxX = 0;
+    [self enumerateChildNodesWithName: @"pillars" usingBlock: ^(SKNode *pair, BOOL *stop) {
+        if (maxX < pair.position.x) {
+            maxX = pair.position.x;
+        }
         if (pair.position.x == -kPillarWidth) {
-            pair.position = CGPointMake(CGRectGetMaxX(self.frame) + kPillarWidth, 0);
-            [(PillarPair *)pair randomize];
-            [pair runAction: self.moveLeftAction];
+            disappeared = pair;
         }
     }];
-}
-
-- (SKAction *)moveLeftAction
-{
-    if (!_moveLeftAction) {
-        _moveLeftAction = [SKAction moveToX: -kPillarWidth duration: kHorizontalPeriod];
+    if (disappeared) {
+        CGFloat xSpeed = self.frame.size.width / kHorizontalPeriod;
+        disappeared.position = CGPointMake(maxX + kPillarDistance + kPillarWidth, 0);
+        [(PillarPair *)disappeared randomize];
+        [disappeared runAction: [SKAction moveToX: -kPillarWidth duration: disappeared.position.x / xSpeed]];
     }
-    return _moveLeftAction;
 }
 
 - (void)createSceneContents
@@ -55,14 +56,29 @@
     self.physicsBody = border;
     self.physicsBody.friction = 0.0;
 
-    SKSpriteNode *pair = [[PillarPair alloc] initForFrame: self.frame];
-    pair.name = @"pair";
-    pair.position = CGPointMake(CGRectGetMaxX(self.frame) + kPillarWidth, 0);
-    [self addChild: pair];
-    
     SKSpriteNode *bird = [self newBird];
     bird.position = CGPointMake(50, CGRectGetMidY(self.frame));
     [self addChild: bird];
+}
+
+- (void)createAndMovePillars
+{
+    SKSpriteNode *pair;
+    CGFloat distanceFromOffset;
+    NSUInteger numOfPair = (NSUInteger)floor(self.frame.size.width / (kPillarWidth + kPillarDistance)) + 1;
+    CGFloat xSpeed = self.frame.size.width / kHorizontalPeriod;
+
+    for (int i = 0; i < numOfPair; i++) {
+        pair = [[PillarPair alloc] initForFrame: self.frame];
+        pair.name = @"pillars";
+        // place each pillar with increasing distance from the right edge of the scene
+        distanceFromOffset = i * (kPillarWidth + kPillarDistance);
+        pair.position = CGPointMake(self.frame.size.width + distanceFromOffset, 0);
+        // increase time needed for each pillar to move out of left edge according to their distance
+        // so that a constant speed is maintained
+        [pair runAction: [SKAction moveToX: -kPillarWidth duration: kHorizontalPeriod + distanceFromOffset / xSpeed]];
+        [self addChild: pair];
+    }
 }
 
 - (SKSpriteNode *)newBird
@@ -75,23 +91,13 @@
     return bird;
 }
 
-- (SKSpriteNode *)newPillar
-{
-    SKSpriteNode *pillar = [SKSpriteNode spriteNodeWithColor: [SKColor greenColor] size: CGSizeMake(kPillarWidth, 100)];
-    pillar.anchorPoint = CGPointMake(0.0, 0.0);
-    pillar.name = @"pillar";
-    return pillar;
-}
-
-
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     SKNode *bird = [self childNodeWithName: @"bird"];
     if (!self.isPlaying) {
         self.isPlaying = YES;
         bird.physicsBody.dynamic = YES;
-        SKNode *pair = [self childNodeWithName: @"pair"];
-        [pair runAction: self.moveLeftAction];
+        [self createAndMovePillars];
     }
     bird.physicsBody.velocity = CGVectorMake(0, kBirdVelocityY);
 
