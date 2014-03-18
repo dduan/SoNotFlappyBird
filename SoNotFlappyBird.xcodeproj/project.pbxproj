@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3708FA8A18D7E50300E24A9E /* PillarPair.m in Sources */ = {isa = PBXBuildFile; fileRef = 3708FA8918D7E50300E24A9E /* PillarPair.m */; };
 		379ED42118D5EC7B002DFCB3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379ED42018D5EC7B002DFCB3 /* Foundation.framework */; };
 		379ED42318D5EC7B002DFCB3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379ED42218D5EC7B002DFCB3 /* CoreGraphics.framework */; };
 		379ED42518D5EC7B002DFCB3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379ED42418D5EC7B002DFCB3 /* UIKit.framework */; };
@@ -21,6 +22,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3708FA8818D7E50300E24A9E /* PillarPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PillarPair.h; sourceTree = "<group>"; };
+		3708FA8918D7E50300E24A9E /* PillarPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PillarPair.m; sourceTree = "<group>"; };
+		3708FA8B18D7E5FA00E24A9E /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		379ED41D18D5EC7B002DFCB3 /* SoNotFlappyBird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoNotFlappyBird.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		379ED42018D5EC7B002DFCB3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		379ED42218D5EC7B002DFCB3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -95,6 +99,9 @@
 				379ED43618D5EC7B002DFCB3 /* ViewController.m */,
 				379ED45718D5F1BC002DFCB3 /* StartScene.h */,
 				379ED45818D5F1BC002DFCB3 /* StartScene.m */,
+				3708FA8818D7E50300E24A9E /* PillarPair.h */,
+				3708FA8918D7E50300E24A9E /* PillarPair.m */,
+				3708FA8B18D7E5FA00E24A9E /* Constants.h */,
 				379ED43818D5EC7B002DFCB3 /* Images.xcassets */,
 				379ED42718D5EC7B002DFCB3 /* Supporting Files */,
 			);
@@ -179,6 +186,7 @@
 			files = (
 				379ED43718D5EC7B002DFCB3 /* ViewController.m in Sources */,
 				379ED43118D5EC7B002DFCB3 /* AppDelegate.m in Sources */,
+				3708FA8A18D7E50300E24A9E /* PillarPair.m in Sources */,
 				379ED42D18D5EC7B002DFCB3 /* main.m in Sources */,
 				379ED45918D5F1BC002DFCB3 /* StartScene.m in Sources */,
 			);
