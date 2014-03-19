@@ -10,7 +10,7 @@
 #import "Constants.h"
 #import "PillarPair.h"
 
-@interface StartScene ()
+@interface StartScene () <SKPhysicsContactDelegate>
 @property (nonatomic) BOOL contentCreated;
 @property (nonatomic) BOOL isPlaying;
 @property (nonatomic) SKAction *headTurn;
@@ -50,6 +50,9 @@
 {
     self.scaleMode = SKSceneScaleModeAspectFit;
     self.physicsWorld.gravity = CGVectorMake(0, kGravityConstantY);
+    self.physicsWorld.contactDelegate = self;
+    self.physicsBody.categoryBitMask = sceneCategory;
+    self.physicsBody.contactTestBitMask = birdCategory;
     
     
     SKPhysicsBody *border = [SKPhysicsBody bodyWithEdgeLoopFromRect: self.frame];
@@ -58,6 +61,8 @@
 
     SKSpriteNode *bird = [self newBird];
     bird.position = CGPointMake(50, CGRectGetMidY(self.frame));
+    bird.physicsBody.categoryBitMask = birdCategory;
+    bird.physicsBody.contactTestBitMask = pillarCategory | sceneCategory;
     [self addChild: bird];
 }
 
@@ -114,5 +119,12 @@
     bird.physicsBody.velocity = CGVectorMake(0, kBirdThrustY);
     [bird removeAllActions];
     [bird runAction: self.headTurn];
+}
+
+#pragma mark SKPhysicsContactDelegate
+
+- (void)didBeginContact:(SKPhysicsContact *)contact
+{
+    NSLog(@"%@ %@", contact.bodyA, contact.bodyB);
 }
 @end

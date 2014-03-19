@@ -20,4 +20,10 @@
 #define kHorizontalPeriod 2.6f
 #define kBirdThrustTurnUpTime 0.49f
 #define kBirdFallTurnDownTime 0.4f
+
+
+static const uint32_t birdCategory      =  0x1 << 0;
+static const uint32_t pillarCategory    =  0x1 << 1;
+static const uint32_t sceneCategory     =  0x1 << 2;
+
 #endif
