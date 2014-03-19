@@ -13,7 +13,7 @@
 @interface StartScene ()
 @property (nonatomic) BOOL contentCreated;
 @property (nonatomic) BOOL isPlaying;
-@property (nonatomic) SKAction *moveLeftAction;
+@property (nonatomic) SKAction *headTurn;
 @end
 
 @implementation StartScene
@@ -61,6 +61,18 @@
     [self addChild: bird];
 }
 
+- (SKAction *)headTurn
+{
+    if (!_headTurn) {
+        _headTurn = [SKAction sequence: @[
+                                         [SKAction rotateToAngle: M_PI_4 duration: 0.0f],
+                                         [SKAction waitForDuration: kBirdThrustTurnUpTime],
+                                         [SKAction rotateToAngle: -M_PI_2 duration: kBirdFallTurnDownTime]
+                                         ]];
+    }
+    return _headTurn;
+}
+
 - (void)createAndMovePillars
 {
     SKSpriteNode *pair;
@@ -83,7 +95,7 @@
 
 - (SKSpriteNode *)newBird
 {	
-    SKSpriteNode *bird = [SKSpriteNode spriteNodeWithImageNamed: @"bird"];
+    SKSpriteNode *bird = [SKSpriteNode spriteNodeWithImageNamed: @"Bird"];
     bird.size = CGSizeMake(kBirdSize, kBirdSize);
     bird.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius: kBirdSize / 2];
     bird.physicsBody.dynamic = NO;
@@ -99,8 +111,8 @@
         bird.physicsBody.dynamic = YES;
         [self createAndMovePillars];
     }
-    bird.physicsBody.velocity = CGVectorMake(0, kBirdVelocityY);
-
-
+    bird.physicsBody.velocity = CGVectorMake(0, kBirdThrustY);
+    [bird removeAllActions];
+    [bird runAction: self.headTurn];
 }
 @end

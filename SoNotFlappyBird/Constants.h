@@ -11,12 +11,13 @@
 
 
 #define kGravityConstantY -11.0f
-#define kBirdSize 44.0f
-#define kBirdVelocityY 530.0f
+#define kBirdSize 36.0f
+#define kBirdThrustY 500.0f
 #define kGroundLevelHeight 100.0f
-#define kPillarWidth 40.0f
-#define kPillarPairGap 200.0f
-#define kPillarDistance 100.0f
-#define kHorizontalPeriod 3.0f
-
+#define kPillarWidth 53.0f
+#define kPillarPairGap 160.0f
+#define kPillarDistance 150.0f
+#define kHorizontalPeriod 2.6f
+#define kBirdThrustTurnUpTime 0.49f
+#define kBirdFallTurnDownTime 0.4f
 #endif
