@@ -6,17 +6,17 @@
 //  Copyright (c) 2014 Daniel Duan. All rights reserved.
 //
 
-#import "StartScene.h"
+#import "Scene.h"
 #import "Constants.h"
 #import "PillarPair.h"
 
-@interface StartScene () <SKPhysicsContactDelegate>
+@interface Scene () <SKPhysicsContactDelegate>
 @property (nonatomic) BOOL contentCreated;
 @property (nonatomic) BOOL isPlaying;
 @property (nonatomic) SKAction *headTurn;
 @end
 
-@implementation StartScene
+@implementation Scene
 
 - (void)didMoveToView:(SKView *)view
 {

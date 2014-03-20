@@ -18,7 +18,7 @@
 		379ED43718D5EC7B002DFCB3 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 379ED43618D5EC7B002DFCB3 /* ViewController.m */; };
 		379ED43918D5EC7B002DFCB3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 379ED43818D5EC7B002DFCB3 /* Images.xcassets */; };
 		379ED45618D5ECB5002DFCB3 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379ED45518D5ECB5002DFCB3 /* SpriteKit.framework */; };
-		379ED45918D5F1BC002DFCB3 /* StartScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 379ED45818D5F1BC002DFCB3 /* StartScene.m */; };
+		379ED45918D5F1BC002DFCB3 /* Scene.m in Sources */ = {isa = PBXBuildFile; fileRef = 379ED45818D5F1BC002DFCB3 /* Scene.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,8 +41,8 @@
 		379ED43818D5EC7B002DFCB3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		379ED43F18D5EC7B002DFCB3 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		379ED45518D5ECB5002DFCB3 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
-		379ED45718D5F1BC002DFCB3 /* StartScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartScene.h; sourceTree = "<group>"; };
-		379ED45818D5F1BC002DFCB3 /* StartScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StartScene.m; sourceTree = "<group>"; };
+		379ED45718D5F1BC002DFCB3 /* Scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
+		379ED45818D5F1BC002DFCB3 /* Scene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scene.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,8 +97,8 @@
 				379ED43218D5EC7B002DFCB3 /* Main.storyboard */,
 				379ED43518D5EC7B002DFCB3 /* ViewController.h */,
 				379ED43618D5EC7B002DFCB3 /* ViewController.m */,
-				379ED45718D5F1BC002DFCB3 /* StartScene.h */,
-				379ED45818D5F1BC002DFCB3 /* StartScene.m */,
+				379ED45718D5F1BC002DFCB3 /* Scene.h */,
+				379ED45818D5F1BC002DFCB3 /* Scene.m */,
 				3708FA8818D7E50300E24A9E /* PillarPair.h */,
 				3708FA8918D7E50300E24A9E /* PillarPair.m */,
 				3708FA8B18D7E5FA00E24A9E /* Constants.h */,
@@ -188,7 +188,7 @@
 				379ED43118D5EC7B002DFCB3 /* AppDelegate.m in Sources */,
 				3708FA8A18D7E50300E24A9E /* PillarPair.m in Sources */,
 				379ED42D18D5EC7B002DFCB3 /* main.m in Sources */,
-				379ED45918D5F1BC002DFCB3 /* StartScene.m in Sources */,
+				379ED45918D5F1BC002DFCB3 /* Scene.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

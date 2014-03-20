@@ -8,7 +8,7 @@
 
 #import <SpriteKit/SpriteKit.h>
 #import "ViewController.h"
-#import "StartScene.h"
+#import "Scene.h"
 
 @interface ViewController ()
 
@@ -28,7 +28,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    StartScene *start = [[StartScene alloc] initWithSize: self.view.frame.size];
+    Scene *start = [[Scene alloc] initWithSize: self.view.frame.size];
     SKView *spriteView = (SKView *)self.view;
     [spriteView presentScene: start];
 }
