@@ -12,4 +12,6 @@
 @interface PillarPair : SKSpriteNode
 - (instancetype)initForFrame: (CGRect)frame;
 - (void)randomize;
+
+@property (nonatomic) BOOL cleared;
 @end

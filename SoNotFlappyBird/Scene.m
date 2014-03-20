@@ -14,6 +14,7 @@
 @property (nonatomic) BOOL contentCreated;
 @property (nonatomic) BOOL isPlaying;
 @property (nonatomic) SKAction *headTurn;
+@property (nonatomic) NSUInteger score;
 @end
 
 @implementation Scene
@@ -28,20 +29,26 @@
 
 - (void)didSimulatePhysics
 {
-    __block SKNode *disappeared = nil;
+    __block PillarPair *disappeared = nil;
     __block CGFloat maxX = 0;
-    [self enumerateChildNodesWithName: @"pillars" usingBlock: ^(SKNode *pair, BOOL *stop) {
+    [self enumerateChildNodesWithName: @"pillars" usingBlock: ^(SKNode *node, BOOL *stop) {
+        PillarPair *pair = (PillarPair *)node;
         if (maxX < pair.position.x) {
             maxX = pair.position.x;
         }
         if (pair.position.x == -kPillarWidth) {
             disappeared = pair;
         }
+        if (pair.position.x < kBirdPositionX && !pair.cleared) {
+            pair.cleared = YES;
+            self.score += 1;
+        }
     }];
     if (disappeared) {
         CGFloat xSpeed = self.frame.size.width / kHorizontalPeriod;
         disappeared.position = CGPointMake(maxX + kPillarDistance + kPillarWidth, 0);
-        [(PillarPair *)disappeared randomize];
+        [disappeared randomize];
+        disappeared.cleared = NO;
         [disappeared runAction: [SKAction moveToX: -kPillarWidth duration: disappeared.position.x / xSpeed]];
     }
 }
@@ -113,6 +120,7 @@
     SKNode *bird = [self childNodeWithName: @"bird"];
     if (!self.isPlaying) {
         self.isPlaying = YES;
+        self.score = 0;
         bird.physicsBody.dynamic = YES;
         [self createAndMovePillars];
     }
@@ -126,5 +134,6 @@
 - (void)didBeginContact:(SKPhysicsContact *)contact
 {
     NSLog(@"%@ %@", contact.bodyA, contact.bodyB);
+    NSLog(@"%ld", self.score);
 }
 @end
