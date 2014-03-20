@@ -15,9 +15,38 @@
 @property (nonatomic) BOOL isPlaying;
 @property (nonatomic) SKAction *headTurn;
 @property (nonatomic) NSUInteger score;
+@property (nonatomic) SKLabelNode *scoreLabel;
 @end
 
 @implementation Scene
+
+
+
+#pragma mark Accessors
+
+- (SKAction *)headTurn
+{
+    if (!_headTurn) {
+        _headTurn = [SKAction sequence: @[
+                                          [SKAction rotateToAngle: M_PI_4 duration: 0.0f],
+                                          [SKAction waitForDuration: kBirdThrustTurnUpTime],
+                                          [SKAction rotateToAngle: -M_PI_2 duration: kBirdFallTurnDownTime]
+                                          ]];
+    }
+    return _headTurn;
+}
+
+- (SKLabelNode *)scoreLabel
+{
+    if (!_scoreLabel) {
+        _scoreLabel = [SKLabelNode labelNodeWithFontNamed: @"Chalkduster"];
+        _scoreLabel.fontColor = [SKColor whiteColor];
+        _scoreLabel.text = @"0";
+    }
+    return _scoreLabel;
+}
+
+#pragma mark -
 
 - (void)didMoveToView:(SKView *)view
 {
@@ -42,6 +71,8 @@
         if (pair.position.x < kBirdPositionX && !pair.cleared) {
             pair.cleared = YES;
             self.score += 1;
+            self.scoreLabel.text = [NSString stringWithFormat: @"%lu", self.score];
+            
         }
     }];
     if (disappeared) {
@@ -71,19 +102,13 @@
     bird.physicsBody.categoryBitMask = birdCategory;
     bird.physicsBody.contactTestBitMask = pillarCategory | sceneCategory;
     [self addChild: bird];
+    
+    self.scoreLabel.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+    self.scoreLabel.zPosition = 1.0f;
+    [self addChild: self.scoreLabel];
 }
 
-- (SKAction *)headTurn
-{
-    if (!_headTurn) {
-        _headTurn = [SKAction sequence: @[
-                                         [SKAction rotateToAngle: M_PI_4 duration: 0.0f],
-                                         [SKAction waitForDuration: kBirdThrustTurnUpTime],
-                                         [SKAction rotateToAngle: -M_PI_2 duration: kBirdFallTurnDownTime]
-                                         ]];
-    }
-    return _headTurn;
-}
+#pragma mark -
 
 - (void)createAndMovePillars
 {
@@ -122,6 +147,7 @@
         self.isPlaying = YES;
         self.score = 0;
         bird.physicsBody.dynamic = YES;
+        
         [self createAndMovePillars];
     }
     bird.physicsBody.velocity = CGVectorMake(0, kBirdThrustY);
