@@ -144,6 +144,7 @@
         [node removeFromParent];
     }];
     self.bird.position = CGPointMake(kBirdPositionX, CGRectGetMidY(self.frame));
+    [self.bird runAction: [SKAction rotateToAngle: 0.0f duration: 0]];
     self.bird.physicsBody.dynamic = NO;
     self.isEnded = NO;
     self.score = 0;
@@ -198,6 +199,8 @@
 
 - (void)didBeginContact:(SKPhysicsContact *)contact
 {
-    [self endGame];
+    if ((contact.bodyA != self.physicsBody && contact.bodyB != self.physicsBody) || (self.frame.size.height  -  contact.contactPoint.y > 20)) {
+        [self endGame];
+    }
 }
 @end
