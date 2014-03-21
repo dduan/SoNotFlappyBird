@@ -13,9 +13,12 @@
 @interface Scene () <SKPhysicsContactDelegate>
 @property (nonatomic) BOOL contentCreated;
 @property (nonatomic) BOOL isPlaying;
+@property (nonatomic) BOOL isEnded;
 @property (nonatomic) SKAction *headTurn;
 @property (nonatomic) NSUInteger score;
 @property (nonatomic) SKLabelNode *scoreLabel;
+@property (nonatomic) CGRect mainFrame;
+@property (nonatomic) SKSpriteNode *bird;
 @end
 
 @implementation Scene
@@ -36,6 +39,19 @@
     return _headTurn;
 }
 
+- (SKSpriteNode *)bird
+{
+    if (!_bird) {
+        _bird = [SKSpriteNode spriteNodeWithImageNamed: @"Bird"];
+        _bird.size = CGSizeMake(kBirdSize, kBirdSize);
+        _bird.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius: kBirdSize / 2];
+        _bird.physicsBody.dynamic = NO;
+        _bird.name = @"bird";
+    }
+    return _bird;
+
+}
+
 - (SKLabelNode *)scoreLabel
 {
     if (!_scoreLabel) {
@@ -46,12 +62,18 @@
     return _scoreLabel;
 }
 
+- (void)setScore:(NSUInteger)score
+{
+    _score = score;
+    self.scoreLabel.text = [NSString stringWithFormat: @"%lu", self.score];
+}
 #pragma mark -
 
 - (void)didMoveToView:(SKView *)view
 {
     if (!self.contentCreated) {
         [self createSceneContents];
+        [self resetGame];
         self.contentCreated = YES;
     }
 }
@@ -71,8 +93,6 @@
         if (pair.position.x < kBirdPositionX && !pair.cleared) {
             pair.cleared = YES;
             self.score += 1;
-            self.scoreLabel.text = [NSString stringWithFormat: @"%lu", self.score];
-            
         }
     }];
     if (disappeared) {
@@ -97,18 +117,46 @@
     self.physicsBody = border;
     self.physicsBody.friction = 0.0;
 
-    SKSpriteNode *bird = [self newBird];
-    bird.position = CGPointMake(50, CGRectGetMidY(self.frame));
-    bird.physicsBody.categoryBitMask = birdCategory;
-    bird.physicsBody.contactTestBitMask = pillarCategory | sceneCategory;
-    [self addChild: bird];
+    self.bird.physicsBody.categoryBitMask = birdCategory;
+    self.bird.physicsBody.contactTestBitMask = pillarCategory | sceneCategory;
+    [self addChild: self.bird];
     
     self.scoreLabel.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
     self.scoreLabel.zPosition = 1.0f;
     [self addChild: self.scoreLabel];
 }
 
+
+
 #pragma mark -
+
+- (void)startGame
+{
+    self.isPlaying = YES;
+    self.isEnded = NO;
+    self.bird.physicsBody.dynamic = YES;
+    [self createAndMovePillars];
+}
+
+- (void)resetGame
+{
+    [self enumerateChildNodesWithName: @"pillars" usingBlock:^(SKNode *node, BOOL *stop) {
+        [node removeFromParent];
+    }];
+    self.bird.position = CGPointMake(kBirdPositionX, CGRectGetMidY(self.frame));
+    self.bird.physicsBody.dynamic = NO;
+    self.isEnded = NO;
+    self.score = 0;
+}
+
+- (void)endGame
+{
+    [self enumerateChildNodesWithName: @"pillars" usingBlock: ^(SKNode *node, BOOL *stop) {
+        [node removeAllActions];
+    }];
+    self.isEnded = YES;
+    self.isPlaying = NO;
+}
 
 - (void)createAndMovePillars
 {
@@ -130,36 +178,26 @@
     }
 }
 
-- (SKSpriteNode *)newBird
-{	
-    SKSpriteNode *bird = [SKSpriteNode spriteNodeWithImageNamed: @"Bird"];
-    bird.size = CGSizeMake(kBirdSize, kBirdSize);
-    bird.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius: kBirdSize / 2];
-    bird.physicsBody.dynamic = NO;
-    bird.name = @"bird";
-    return bird;
-}
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    SKNode *bird = [self childNodeWithName: @"bird"];
-    if (!self.isPlaying) {
-        self.isPlaying = YES;
-        self.score = 0;
-        bird.physicsBody.dynamic = YES;
-        
-        [self createAndMovePillars];
+    if (!self.isPlaying && !self.isEnded) {
+        [self startGame];
     }
-    bird.physicsBody.velocity = CGVectorMake(0, kBirdThrustY);
-    [bird removeAllActions];
-    [bird runAction: self.headTurn];
+    if (!self.isEnded) {
+        self.bird.physicsBody.velocity = CGVectorMake(0, kBirdThrustY);
+        [self.bird removeAllActions];
+        [self.bird runAction: self.headTurn];
+    } else {
+        [self resetGame]; //TODO: replace this with proper restart button
+    }
 }
+
 
 #pragma mark SKPhysicsContactDelegate
 
 - (void)didBeginContact:(SKPhysicsContact *)contact
 {
-    NSLog(@"%@ %@", contact.bodyA, contact.bodyB);
-    NSLog(@"%ld", self.score);
+    [self endGame];
 }
 @end
