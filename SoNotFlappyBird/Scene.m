@@ -144,6 +144,7 @@
         [node removeFromParent];
     }];
     self.bird.position = CGPointMake(kBirdPositionX, CGRectGetMidY(self.frame));
+    [self.bird removeAllActions];
     [self.bird runAction: [SKAction rotateToAngle: 0.0f duration: 0]];
     self.bird.physicsBody.dynamic = NO;
     self.isEnded = NO;
