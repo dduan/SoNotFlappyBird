@@ -19,6 +19,7 @@
 @property (nonatomic) SKLabelNode *scoreLabel;
 @property (nonatomic) CGRect mainFrame;
 @property (nonatomic) SKSpriteNode *bird;
+@property (nonatomic) SKLabelNode *restartButton;
 @end
 
 @implementation Scene
@@ -50,6 +51,16 @@
     }
     return _bird;
 
+}
+
+- (SKLabelNode *)restartButton
+{
+    if (!_restartButton) {
+        _restartButton = [SKLabelNode labelNodeWithFontNamed: @"Chalkduster"];
+        _restartButton.text = @"Restart";
+        _restartButton.name = @"restartButton";
+    }
+    return _restartButton;
 }
 
 - (SKLabelNode *)scoreLabel
@@ -149,15 +160,21 @@
     self.bird.physicsBody.dynamic = NO;
     self.isEnded = NO;
     self.score = 0;
+    [self.restartButton removeFromParent];
 }
 
 - (void)endGame
 {
-    [self enumerateChildNodesWithName: @"pillars" usingBlock: ^(SKNode *node, BOOL *stop) {
-        [node removeAllActions];
-    }];
-    self.isEnded = YES;
-    self.isPlaying = NO;
+    if (!self.isEnded) {
+        [self enumerateChildNodesWithName: @"pillars" usingBlock: ^(SKNode *node, BOOL *stop) {
+            [node removeAllActions];
+        }];
+        self.isEnded = YES;
+        self.isPlaying = NO;
+        self.restartButton.position = CGPointMake(CGRectGetMidX(self.frame), self.frame.size.height * 0.6f);
+        [self addChild: self.restartButton];
+        [self.restartButton runAction: [SKAction moveToX: CGRectGetMidX(self.frame) duration: 0.3f]];
+    }
 }
 
 - (void)createAndMovePillars
@@ -191,7 +208,11 @@
         [self.bird removeAllActions];
         [self.bird runAction: self.headTurn];
     } else {
-        [self resetGame]; //TODO: replace this with proper restart button
+        CGPoint touchLocation = [[touches anyObject] locationInNode: self];
+        SKNode *touchedNode = [self nodeAtPoint: touchLocation];
+        if ([touchedNode.name isEqualToString: @"restartButton"]) {
+            [self resetGame];
+        }
     }
 }
 
