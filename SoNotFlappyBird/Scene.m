@@ -15,11 +15,13 @@
 @property (nonatomic) BOOL isPlaying;
 @property (nonatomic) BOOL isEnded;
 @property (nonatomic) SKAction *headTurn;
+@property (nonatomic) SKAction *showUp;
 @property (nonatomic) NSUInteger score;
 @property (nonatomic) SKLabelNode *scoreLabel;
 @property (nonatomic) CGRect mainFrame;
 @property (nonatomic) SKSpriteNode *bird;
 @property (nonatomic) SKLabelNode *restartButton;
+@property (nonatomic) SKSpriteNode *deathCurtain;
 @end
 
 @implementation Scene
@@ -38,6 +40,24 @@
                                           ]];
     }
     return _headTurn;
+}
+
+- (SKAction *)showUp
+{
+    if (!_showUp) {
+        CGFloat restartButtonHeight = self.mainFrame.size.height * 0.4f + kGroundLevelHeight;
+        CGPoint startPoint = CGPointMake(CGRectGetMidX(self.mainFrame), restartButtonHeight - 60.0f);
+        SKAction *hide = [SKAction group: @[
+                                            [SKAction moveTo: startPoint duration: 0.0f],
+                                            [SKAction fadeInWithDuration: 0.0f]
+                                            ]];
+        SKAction *show = [SKAction group: @[
+                                            [SKAction fadeInWithDuration: kRestartButtonAppearTime],
+                                             [SKAction moveToY: restartButtonHeight duration:kRestartButtonAppearTime]
+                                             ]];
+        _showUp = [SKAction sequence: @[hide, show]];
+    }
+    return _showUp;
 }
 
 - (SKSpriteNode *)bird
@@ -73,10 +93,20 @@
     return _scoreLabel;
 }
 
+- (SKSpriteNode *)deathCurtain
+{
+    if (!_deathCurtain) {
+        _deathCurtain = [SKSpriteNode spriteNodeWithColor: [SKColor whiteColor] size:self.frame.size];
+        _deathCurtain.anchorPoint = CGPointZero;
+        _deathCurtain.alpha = 0.75f;
+    }
+    return _deathCurtain;
+}
+
 - (void)setScore:(NSUInteger)score
 {
     _score = score;
-    self.scoreLabel.text = [NSString stringWithFormat: @"%lu", self.score];
+    self.scoreLabel.text = [NSString stringWithFormat: @"%u", self.score];
 }
 #pragma mark -
 
@@ -147,6 +177,8 @@
     self.scoreLabel.position = CGPointMake(CGRectGetMidX(self.mainFrame), CGRectGetMidY(self.mainFrame));
     self.scoreLabel.zPosition = 1.0f;
     [self addChild: self.scoreLabel];
+    
+    self.deathCurtain.zPosition = 2.0f;
 }
 
 
@@ -183,10 +215,13 @@
         }];
         self.isEnded = YES;
         self.isPlaying = NO;
-        CGFloat restartButtonHeight = self.mainFrame.size.height * 0.4f + kGroundLevelHeight;
-        self.restartButton.position = CGPointMake(CGRectGetMidX(self.mainFrame), restartButtonHeight);
-        [self addChild: self.restartButton];
-        [self.restartButton runAction: [SKAction moveToX: CGRectGetMidX(self.mainFrame) duration: 0.3f]];
+        self.deathCurtain.alpha = 0.75f;
+        [self addChild: self.deathCurtain];
+        [self.deathCurtain runAction: [SKAction fadeOutWithDuration: kDeathCurtainAnimationTime] completion: ^{
+            [self.deathCurtain removeFromParent];
+            [self addChild: self.restartButton];
+            [self.restartButton runAction: self.showUp];
+        }];
     }
 }
 
