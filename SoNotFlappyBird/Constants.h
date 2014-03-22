@@ -14,7 +14,7 @@
 #define kBirdSize 36.0f
 #define kBirdPositionX 50.0f
 #define kBirdThrustY 500.0f
-#define kGroundLevelHeight 100.0f
+#define kGroundLevelHeight 125.0f
 #define kPillarWidth 53.0f
 #define kPillarPairGap 160.0f
 #define kPillarDistance 150.0f

@@ -41,12 +41,12 @@
     CGFloat upperHeight = arc4random_uniform((u_int32_t)floor(self.size.height - kPillarPairGap));
     CGPoint center;
     _upper.size = CGSizeMake(kPillarWidth, upperHeight);
-    _upper.position = CGPointMake(0, self.size.height - upperHeight);
+    _upper.position = CGPointMake(0, self.size.height - upperHeight + kGroundLevelHeight);
     center = CGPointMake(_upper.size.width / 2, _upper.size.height / 2);
     _upper.physicsBody = [self rectangularPhysicsBodyOfSize: _upper.size center:center];
     
     _lower.size = CGSizeMake(kPillarWidth, self.size.height - upperHeight - kPillarPairGap);
-    _lower.position = CGPointMake(0, 0);
+    _lower.position = CGPointMake(0, kGroundLevelHeight);
     center = CGPointMake(_lower.size.width / 2, _lower.size.height / 2);
     _lower.physicsBody = [self rectangularPhysicsBodyOfSize: _lower.size center:center];
 }

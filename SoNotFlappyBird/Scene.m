@@ -107,7 +107,7 @@
         }
     }];
     if (disappeared) {
-        CGFloat xSpeed = self.frame.size.width / kHorizontalPeriod;
+        CGFloat xSpeed = self.mainFrame.size.width / kHorizontalPeriod;
         disappeared.position = CGPointMake(maxX + kPillarDistance + kPillarWidth, 0);
         [disappeared randomize];
         disappeared.cleared = NO;
@@ -123,16 +123,28 @@
     self.physicsBody.categoryBitMask = sceneCategory;
     self.physicsBody.contactTestBitMask = birdCategory;
     
+    self.mainFrame = CGRectMake(
+                                self.frame.origin.x,
+                                self.frame.origin.y + kGroundLevelHeight,
+                                self.frame.size.width,
+                                self.frame.size.height - kGroundLevelHeight
+                                );
     
-    SKPhysicsBody *border = [SKPhysicsBody bodyWithEdgeLoopFromRect: self.frame];
-    self.physicsBody = border;
+    self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect: self.mainFrame];
     self.physicsBody.friction = 0.0;
+    
+    SKSpriteNode *ground = [SKSpriteNode spriteNodeWithColor: [SKColor blackColor]
+                                                        size: CGSizeMake(self.mainFrame.size.width, kGroundLevelHeight)];
+    ground.anchorPoint = CGPointZero;
+    ground.position = CGPointZero;
+    [self addChild: ground];
+    
 
     self.bird.physicsBody.categoryBitMask = birdCategory;
     self.bird.physicsBody.contactTestBitMask = pillarCategory | sceneCategory;
     [self addChild: self.bird];
     
-    self.scoreLabel.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+    self.scoreLabel.position = CGPointMake(CGRectGetMidX(self.mainFrame), CGRectGetMidY(self.mainFrame));
     self.scoreLabel.zPosition = 1.0f;
     [self addChild: self.scoreLabel];
 }
@@ -154,7 +166,7 @@
     [self enumerateChildNodesWithName: @"pillars" usingBlock:^(SKNode *node, BOOL *stop) {
         [node removeFromParent];
     }];
-    self.bird.position = CGPointMake(kBirdPositionX, CGRectGetMidY(self.frame));
+    self.bird.position = CGPointMake(kBirdPositionX, CGRectGetMidY(self.mainFrame));
     [self.bird removeAllActions];
     [self.bird runAction: [SKAction rotateToAngle: 0.0f duration: 0]];
     self.bird.physicsBody.dynamic = NO;
@@ -171,9 +183,10 @@
         }];
         self.isEnded = YES;
         self.isPlaying = NO;
-        self.restartButton.position = CGPointMake(CGRectGetMidX(self.frame), self.frame.size.height * 0.6f);
+        CGFloat restartButtonHeight = self.mainFrame.size.height * 0.4f + kGroundLevelHeight;
+        self.restartButton.position = CGPointMake(CGRectGetMidX(self.mainFrame), restartButtonHeight);
         [self addChild: self.restartButton];
-        [self.restartButton runAction: [SKAction moveToX: CGRectGetMidX(self.frame) duration: 0.3f]];
+        [self.restartButton runAction: [SKAction moveToX: CGRectGetMidX(self.mainFrame) duration: 0.3f]];
     }
 }
 
@@ -181,15 +194,15 @@
 {
     SKSpriteNode *pair;
     CGFloat distanceFromOffset;
-    NSUInteger numOfPair = (NSUInteger)floor(self.frame.size.width / (kPillarWidth + kPillarDistance)) + 1;
-    CGFloat xSpeed = self.frame.size.width / kHorizontalPeriod;
+    NSUInteger numOfPair = (NSUInteger)floor(self.mainFrame.size.width / (kPillarWidth + kPillarDistance)) + 1;
+    CGFloat xSpeed = self.mainFrame.size.width / kHorizontalPeriod;
 
     for (int i = 0; i < numOfPair; i++) {
-        pair = [[PillarPair alloc] initForFrame: self.frame];
+        pair = [[PillarPair alloc] initForFrame: self.mainFrame];
         pair.name = @"pillars";
         // place each pillar with increasing distance from the right edge of the scene
         distanceFromOffset = i * (kPillarWidth + kPillarDistance);
-        pair.position = CGPointMake(self.frame.size.width + distanceFromOffset, 0);
+        pair.position = CGPointMake(self.mainFrame.size.width + distanceFromOffset, 0);
         // increase time needed for each pillar to move out of left edge according to their distance
         // so that a constant speed is maintained
         [pair runAction: [SKAction moveToX: -kPillarWidth duration: kHorizontalPeriod + distanceFromOffset / xSpeed]];
@@ -221,7 +234,8 @@
 
 - (void)didBeginContact:(SKPhysicsContact *)contact
 {
-    if ((contact.bodyA != self.physicsBody && contact.bodyB != self.physicsBody) || (self.frame.size.height  -  contact.contactPoint.y > 20)) {
+    CGFloat lowestThreshold = self.mainFrame.size.height  -  contact.contactPoint.y;
+    if ((contact.bodyA != self.physicsBody && contact.bodyB != self.physicsBody) || ( lowestThreshold > 20)) {
         [self endGame];
     }
 }
